@@ -114,7 +114,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        temp_storage = self.storage
+        self.storage = [None] * self.capacity
+        for element in temp_storage:
+            if element is not None:
+                self.insert(element.key, element.value)
+                to_check = element
+                while to_check.next is not None:
+                    to_check = to_check.next
+                    self.insert(to_check.key, to_check.value)
 
 
 if __name__ == "__main__":
