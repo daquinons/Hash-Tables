@@ -55,19 +55,17 @@ class HashTable:
         return hash(key)
 
     def _hash_djb2(self, key):
-        '''
-        Hash an arbitrary key using DJB2 hash
-
-        OPTIONAL STRETCH: Research and implement DJB2
-        '''
-        pass
+        hash = 5381
+        for char in key:
+            hash = ((hash << 5) + hash) + ord(char)
+        return hash & 0xFFFFFFFF
 
     def _hash_mod(self, key):
         '''
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
-        return self._hash(key) % self.capacity
+        return self._hash_djb2(key) % self.capacity
 
     def insert(self, key, value):
         '''
@@ -91,7 +89,22 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] is not None:
+            if self.storage[index].key == key:
+                self.storage[index] = self.storage[index].next
+                return None
+            else:
+                prev = self.storage[index]
+                to_check = prev.next
+                while to_check is not None:
+                    if to_check.key == key:
+                        prev.next = to_check.next
+                        return None
+                    prev = to_check
+                    to_check = prev.next
+
+        print("key not found")
 
     def retrieve(self, key):
         '''
